@@ -437,6 +437,29 @@ function install_software() {
     fi
 }
 
+function install_software_pi() {
+    local SCRATCH="http://archive.raspberrypi.org/debian/pool/main/s/scratch/scratch_1.4.20131203-2_all.deb"
+    local WIRINGPI="http://archive.raspberrypi.org/debian/pool/main/w/wiringpi/wiringpi_2.32_armhf.deb"
+
+    # build-essential
+    chroot $R apt-get -y install build-essential
+
+    # Python
+    chroot $R apt-get -y install python-minimal python3-minimal
+    chroot $R apt-get -y install python-dev python3-dev
+    chroot $R apt-get -y install python-pip python3-pip
+    chroot $R apt-get -y install python-setuptools python3-setuptools
+
+    # dphys-swap
+    chroot $R apt-get -y install dphys-swap
+    
+    # git
+    chroot $R apt-get -y install git
+    
+    # python-mpi4py
+    chroot $R apt-get -y install python-mpi4py
+}
+
 function clean_up() {
     rm -f $R/etc/apt/*.save || true
     rm -f $R/etc/apt/sources.list.d/*.save || true
@@ -615,6 +638,7 @@ function stage_03_raspi2() {
     mount_system
     configure_hardware ${FS_TYPE}
     install_software
+    install_software_pi
     apt_upgrade
     apt_clean
     clean_up
